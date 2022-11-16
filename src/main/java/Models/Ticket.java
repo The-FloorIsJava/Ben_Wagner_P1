@@ -24,7 +24,7 @@ public class Ticket {
     }
 
     public double getAmount(){
-        return this.id;
+        return this.amount;
     }
 
     public String getDescription(){
