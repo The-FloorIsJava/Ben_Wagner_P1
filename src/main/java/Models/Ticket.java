@@ -4,13 +4,13 @@ public class Ticket {
     private int id;
     private double amount;
     private String description;
-    private boolean status;
+    private Boolean status;
     private int submitterId;
     private int processorId;
 
     public Ticket(){}
 
-    public Ticket(int id, double amount, String description, boolean status, int submitterId, int processorId){
+    public Ticket(int id, double amount, String description, Boolean status, int submitterId, int processorId){
         this.id = id;
         this.amount = amount;
         this.description = description;
@@ -31,7 +31,7 @@ public class Ticket {
         return this.description;
     }
 
-    public boolean getStatus(){
+    public Boolean getStatus(){
         return this.status;
     }
 
