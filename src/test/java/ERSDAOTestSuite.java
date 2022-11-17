@@ -1,3 +1,4 @@
+import DAO.ERSDAO;
 import Models.Ticket;
 import Models.User;
 import org.junit.Test;
@@ -15,7 +16,6 @@ public class ERSDAOTestSuite {
         //act
         User testUser = ersdao.getUser(user.getEmail());
         //assert
-        Assert.assertNotNull(testUser);
         Assert.assertEquals(testUser.getEmail(), user.getEmail());
         Assert.assertEquals(testUser.getId(), user.getId());
         Assert.assertEquals(testUser.getPassword(), user.getPassword());
@@ -28,7 +28,7 @@ public class ERSDAOTestSuite {
 
         List<Ticket> ticketList = ersdao.getTicketsByUser(user);
 
-        Assert.assertNotNull(ticketList);
+        Assert.assertNotNull(ticketList);//Need a different assert as of now this test will always be true
 
     }
 
@@ -36,6 +36,6 @@ public class ERSDAOTestSuite {
     public void test_getPendingTickets_returnValidList(){
         List<Ticket> ticketList = ersdao.getPendingTickets();
 
-        Assert.assertNotNull(ticketList);
+        Assert.assertNotNull(ticketList);//Need a different assert as of now this test will always be true
     }
 }

@@ -35,6 +35,10 @@ public class Ticket {
         return this.status;
     }
 
+    public void setStatus(Boolean status){
+        this.status = status;
+    }
+
     public int getSubmitter(){
         return this.submitterId;
     }
