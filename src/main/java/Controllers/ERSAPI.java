@@ -2,6 +2,7 @@ package Controllers;
 
 import DAO.ERSDAO;
 import Models.Ticket;
+import Models.User;
 import Services.ERSService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -38,15 +39,27 @@ public class ERSAPI {
 
     //Handler to login
     private void loginHandler(Context context){
-
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(context.body());
+            ersService.login(root.get("email").asText(), root.get("password").asText());//need to get the id of the processor
+        }catch(JsonProcessingException e){
+            e.printStackTrace();
+        }
     }
     //Handler to logout
     private void logoutHandler(Context context){
-
+        ersService.logout();
     }
     //Handler to register
     private void registerHandler(Context context){
-
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            User user = mapper.readValue(context.body(), User.class);
+            ersService.registerUser(user);
+        }catch(JsonProcessingException e){
+            e.printStackTrace();
+        }
     }
     //Handler to submit ticket
     private void submitHandler(Context context){
@@ -54,19 +67,30 @@ public class ERSAPI {
     }
     //Handler for employee to view submitted tickets
     private void getSubmittedHandler(Context context){
+        List<Ticket> submittedTickets = ersService.getSubmitted();
+        if(submittedTickets != null){
+            context.json(submittedTickets);
+        }else{
+            context.result("You are not logged in");
+        }
 
     }
     //Handler for managers to view pending tickets
     private void getPendingHandler(Context context){
         List<Ticket> pendingTickets = ersService.getPendingTickets();
-        context.json(pendingTickets);
+        if(pendingTickets != null) {
+            context.json(pendingTickets);
+        }else{
+            context.result("You are not logged in");
+        }
+
     }
     //Handler for managers to submit ticket approval or denial
     private void submitVerdictHandler(Context context){
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(context.body());
-            context.result(ersService.processTicket(root.get("id").asInt(), root.get("status").asBoolean(), 8));//need to get the id of the processor
+            context.result(ersService.processTicket(root.get("id").asInt(), root.get("status").asBoolean()));
         }catch(JsonProcessingException e){
             e.printStackTrace();
         }

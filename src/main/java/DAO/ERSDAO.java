@@ -36,6 +36,22 @@ public class ERSDAO {
         return user;
     }
 
+    public User getUserLogin(String email, String password){
+        User user = null;
+        try(Connection connection = ConnectionFactory.getConnectionFactory().getConnection()){
+            String sql = "Select * from users where email = '" + email + "' and password='" + password +"'";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                User loadedUser = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4));
+                user = loadedUser;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     /**
         The purpose of this method is to retrieve a list of tickets which were submitted by the user
         @param user takes a user object

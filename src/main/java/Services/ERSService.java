@@ -9,7 +9,7 @@ import java.util.List;
 //This class will use the DAO.ERSDAO to retrieve or add information to the database
 public class ERSService{
     private final ERSDAO ersdao;
-
+    private User sessionUser = null;
     public ERSService(ERSDAO ersdao){
         this.ersdao = ersdao;
     }
@@ -18,15 +18,26 @@ public class ERSService{
         return ersdao.getUser(email);
     }
 
-    public List<Ticket> getTicketsByUser(User user) {
-        return ersdao.getTicketsByUser(user);
+    public void login(String email, String password){
+        sessionUser = ersdao.getUserLogin(email, password);
+    }
+
+    public void logout(){
+        sessionUser = null;
+    }
+
+    public List<Ticket> getSubmitted() {
+        if(sessionUser != null) {
+            return ersdao.getTicketsByUser(sessionUser);
+        }
+        return null;
     }
 
     public List<Ticket> getPendingTickets() {
         return ersdao.getPendingTickets();
     }
 
-    public void addUser(User user) {
+    public void registerUser(User user) { //need to add verification that email is unique and a response if it isn't
         ersdao.addUser(user);
     }
 
@@ -41,14 +52,17 @@ public class ERSService{
      * @param id the id of the ticket to be updates
      * @param status the given status
      */
-    public String processTicket(int id, boolean status, int processor) {
+    public String processTicket(int id, boolean status) {
+        if(sessionUser == null || !sessionUser.getIsManager()){
+            return "Must be a manager to process tickets";
+        }
         Ticket ticket = ersdao.getTicket(id);
         if(ticket.getStatus() != null){
             return "Cannot process previously processed ticket.";
         }else{
             ticket.setStatus(status);
             ersdao.processTicket(ticket);
-            return "Success the ticket has been processed!";
+            return "Success! The ticket has been processed.";
         }
     }
 }
