@@ -34,15 +34,41 @@ public class ERSService{
     }
 
     public List<Ticket> getPendingTickets() {
+        if(sessionUser == null || !sessionUser.getIsManager()){
+            return null;
+        }
         return ersdao.getPendingTickets();
     }
 
-    public void registerUser(User user) { //need to add verification that email is unique and a response if it isn't
-        ersdao.addUser(user);
+    public String registerUser(User user) {
+        User tempUser = ersdao.getUser(user.getEmail());
+        String pass = user.getPassword();
+        if(pass.length() < 5 || pass == null){
+            return "Must have password with 5 or more characters";
+        }
+        if(user.getEmail().length() < 0 || user.getEmail() == null){
+            return "Email is required";
+        }
+        if(tempUser == null){
+            ersdao.addUser(user);
+            return "Successfully registered!";
+        }else{
+            return "Username is taken.";
+        }
     }
 
-    public void addTicket(Ticket ticket) {
+    public String addTicket(Ticket ticket) {
+        if(sessionUser == null){
+            return "Must be logged in to submit a ticket";
+        }
+        ticket.setSubmitterId(sessionUser.getId());
+        if(ticket.getAmount() <= 0){
+            return "amount cannot be less than or equal to 0";
+        } else if (ticket.getDescription().length() == 0 || ticket.getDescription() == null) {
+            return "Description cannot be empty";
+        }
         ersdao.addTicket(ticket);
+        return "Successfully submitted ticket!";
     }
 
     /**
@@ -61,6 +87,7 @@ public class ERSService{
             return "Cannot process previously processed ticket.";
         }else{
             ticket.setStatus(status);
+            ticket.setProcessorId(sessionUser.getId());
             ersdao.processTicket(ticket);
             return "Success! The ticket has been processed.";
         }

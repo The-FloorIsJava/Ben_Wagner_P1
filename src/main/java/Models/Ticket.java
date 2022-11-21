@@ -43,7 +43,15 @@ public class Ticket {
         return this.submitterId;
     }
 
+    public void setSubmitterId(int submitterId) {
+        this.submitterId = submitterId;
+    }
+
     public int getProcessor(){
         return this.processorId;
+    }
+
+    public void setProcessorId(int processorId) {
+        this.processorId = processorId;
     }
 }

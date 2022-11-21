@@ -5,15 +5,11 @@ import Models.Ticket;
 import Models.User;
 import Services.ERSService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.eclipse.jetty.util.DateCache;
 
-import java.util.HashMap;
 import java.util.List;
 
 //This class will be my controller/api
@@ -50,20 +46,27 @@ public class ERSAPI {
     //Handler to logout
     private void logoutHandler(Context context){
         ersService.logout();
+        context.result("Logged out.");
     }
     //Handler to register
     private void registerHandler(Context context){
         try{
             ObjectMapper mapper = new ObjectMapper();
             User user = mapper.readValue(context.body(), User.class);
-            ersService.registerUser(user);
+            context.result(ersService.registerUser(user));
         }catch(JsonProcessingException e){
             e.printStackTrace();
         }
     }
     //Handler to submit ticket
     private void submitHandler(Context context){
-
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            Ticket ticket = mapper.readValue(context.body(), Ticket.class);
+            context.result(ersService.addTicket(ticket));
+        }catch(JsonProcessingException e){
+            e.printStackTrace();
+        }
     }
     //Handler for employee to view submitted tickets
     private void getSubmittedHandler(Context context){
@@ -81,7 +84,7 @@ public class ERSAPI {
         if(pendingTickets != null) {
             context.json(pendingTickets);
         }else{
-            context.result("You are not logged in");
+            context.result("You are not logged in as a manager");
         }
 
     }
