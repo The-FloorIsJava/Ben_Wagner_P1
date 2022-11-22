@@ -10,5 +10,5 @@ create table tickets (
 	description text not null,
 	status bool default null,
 	submitter_id integer references users(id),
-	processer_id integer references users(id)
+	processor_id integer references users(id)
 );

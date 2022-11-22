@@ -53,7 +53,7 @@ public class ERSService{
             ersdao.addUser(user);
             return "Successfully registered!";
         }else{
-            return "Username is taken.";
+            return "Email is already in use.";
         }
     }
 

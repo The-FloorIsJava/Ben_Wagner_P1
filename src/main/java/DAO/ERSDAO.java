@@ -65,7 +65,7 @@ public class ERSDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(1);
-                int amount = rs.getInt(2);
+                double amount = rs.getDouble(2);
                 String description = rs.getString(3);
                 Boolean status = rs.getBoolean(4);
                 status = rs.wasNull() ? null : status; //rs.getBoolean returns false if null... so checked if rs.wasNull and reset to null if true
@@ -90,7 +90,7 @@ public class ERSDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                Ticket ticket = new Ticket(rs.getInt(1), rs.getInt(2), rs.getString(3), null, rs.getInt(5), rs.getInt(6));
+                Ticket ticket = new Ticket(rs.getInt(1), rs.getDouble(2), rs.getString(3), null, rs.getInt(5), rs.getInt(6));
                 ticketList.add(ticket);
             }
 
@@ -173,7 +173,7 @@ public class ERSDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int ticketId = rs.getInt(1);
-                int amount = rs.getInt(2);
+                double amount = rs.getDouble(2);
                 String description = rs.getString(3);
                 Boolean status = rs.getBoolean(4);
                 status = rs.wasNull() ? null : status; //rs.getBoolean returns false if null... so checked if rs.wasNull and reset to null if true
