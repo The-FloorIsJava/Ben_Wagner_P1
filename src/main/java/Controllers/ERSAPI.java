@@ -20,7 +20,14 @@ public class ERSAPI {
     ERSService ersService = new ERSService(ersdao);
     //javalin setup
     public void startAPI(){
-        Javalin app = Javalin.create().start(8080);
+        Javalin app = Javalin.create(config -> {
+            config.plugins.enableCors(cors -> {
+                cors.add(it ->{
+                    it.anyHost();
+                });
+            });
+        }).start(8080);
+
 
         app.post("/login", this::loginHandler);
         app.delete("/logout", this::logoutHandler);
